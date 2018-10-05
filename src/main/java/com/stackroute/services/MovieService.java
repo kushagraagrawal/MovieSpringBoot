@@ -13,5 +13,6 @@ public interface MovieService{
     public List<Movie> getAllMovies();
     public void deleteMovieById(String movieId);
     public Movie updateMovie(String movieId, Movie movie);
-    //public Optional<Movie> getMovieById(String movieId);
+    public Optional<Movie> getMovieById(String movieId);
+    public List<Movie> getMovieByMovieName(String movieName);
 }

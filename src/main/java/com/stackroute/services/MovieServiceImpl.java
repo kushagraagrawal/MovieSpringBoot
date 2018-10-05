@@ -36,12 +36,19 @@ public class MovieServiceImpl implements MovieService {
         Optional<Movie> movieretrieved = movieRepository.findById(movieId);
         Movie storedMovie = (Movie) movieretrieved.get();
         storedMovie.setMovieName(movie.getMovieName());
-        storedMovie.setMovieRating(movie.getMovieRating());
+        storedMovie.setMovieRating(movie.getMogvieRatin());
         storedMovie.setMovieReview(movie.getMovieReview());
         return movieRepository.save(storedMovie);
     }
 
-    public List<Movie> findByName(String movieName) {
+    @Override
+    public Optional<Movie> getMovieById(String movieId) {
+        return movieRepository.findById(movieId);
+    }
+
+    @Override
+    public List<Movie> getMovieByMovieName(String movieName) {
         return movieRepository.findByMovieName(movieName);
     }
+
 }
