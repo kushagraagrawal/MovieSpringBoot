@@ -9,6 +9,7 @@ import com.stackroute.services.MovieService;
 import com.stackroute.services.MovieServiceImpl;
 import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.ObjectError;
@@ -24,6 +25,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/v1/movie")
 public class MovieController {
 
+    @Qualifier("MovieServiceImpl2")
     private MovieService movieService;
     @Autowired
     public MovieController(MovieService movieService){
@@ -57,7 +59,7 @@ public class MovieController {
             Movie movieThatWasUpdated = movieService.updateMovie(id, movie);
             responseEntity =  new ResponseEntity<Movie>(movieThatWasUpdated, HttpStatus.OK);
         }catch (MovieNotFoundException e){
-            responseEntity = new ResponseEntity<String>(e.getMessage(), HttpStatus.OK);
+            responseEntity = new ResponseEntity<String>(e.getMessage(), HttpStatus.NOT_FOUND); //check
         }
 
         return responseEntity;
@@ -73,7 +75,7 @@ public class MovieController {
 
             responseEntity = new ResponseEntity<List<Movie>>(movieList, HttpStatus.OK);
         }catch (EmptyDBException e){
-            responseEntity = new ResponseEntity<String>(e.getMessage(), HttpStatus.OK);
+            responseEntity = new ResponseEntity<String>(e.getMessage(), HttpStatus.NOT_ACCEPTABLE);//check
         }
         return responseEntity;
     }
@@ -87,7 +89,7 @@ public class MovieController {
             List<Movie> movieList = movieService.getAllMovies();
             return new ResponseEntity<List<Movie>>(movieList, HttpStatus.OK);
         }catch (MovieNotFoundException e){
-            return new ResponseEntity<String>(e.getMessage(), HttpStatus.OK);
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.NOT_FOUND);//check
         }
     }
 
@@ -100,7 +102,7 @@ public class MovieController {
 
             return new ResponseEntity<List<Movie>>(moviesByName, HttpStatus.OK);
         }catch (MovieNotFoundException e){
-            return new ResponseEntity<String>(e.getMessage(), HttpStatus.OK);
+            return new ResponseEntity<String>(e.getMessage(), HttpStatus.NOT_FOUND);//check
         }
 
     }

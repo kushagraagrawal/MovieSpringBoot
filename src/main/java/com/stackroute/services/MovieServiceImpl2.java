@@ -1,21 +1,17 @@
 package com.stackroute.services;
 
-
 import com.stackroute.domain.Movie;
 import com.stackroute.repository.MovieRepository;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.context.annotation.Primary;
+import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.Optional;
 
 @Service
-@Primary
-public class MovieServiceImpl implements MovieService {
-
-
-
+@Qualifier("MovieServiceImpl2")
+public class MovieServiceImpl2 implements MovieService {
     @Autowired
     MovieRepository movieRepository;
 
@@ -25,6 +21,7 @@ public class MovieServiceImpl implements MovieService {
     }
     @Override
     public List<Movie> getAllMovies(){
+        System.out.println("recovering movies");
         return (List<Movie>) movieRepository.findAll();
     }
 
@@ -53,5 +50,4 @@ public class MovieServiceImpl implements MovieService {
     public List<Movie> getMovieByMovieName(String movieName) {
         return movieRepository.findByMovieName(movieName);
     }
-
 }
