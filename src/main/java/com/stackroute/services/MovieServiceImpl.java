@@ -36,7 +36,7 @@ public class MovieServiceImpl implements MovieService {
         Optional<Movie> movieretrieved = movieRepository.findById(movieId);
         Movie storedMovie = (Movie) movieretrieved.get();
         storedMovie.setMovieName(movie.getMovieName());
-        storedMovie.setMovieRating(movie.getMogvieRatin());
+        storedMovie.setMovieRating(movie.getMovieRating());
         storedMovie.setMovieReview(movie.getMovieReview());
         return movieRepository.save(storedMovie);
     }

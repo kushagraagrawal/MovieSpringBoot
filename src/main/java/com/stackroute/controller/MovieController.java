@@ -7,14 +7,20 @@ import com.stackroute.domain.Movie;
 import com.stackroute.repository.MovieRepository;
 import com.stackroute.services.MovieService;
 import com.stackroute.services.MovieServiceImpl;
+import io.swagger.annotations.Api;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.ObjectError;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.*;
 
+import javax.validation.Valid;
 import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
+@Api(value = "MovieCruiser", description = "operations related to movieapp")
 @RequestMapping("/api/v1/movie")
 public class MovieController {
 
@@ -25,7 +31,7 @@ public class MovieController {
     }
 
     @PostMapping() // maps the json in the payload to the object
-    public ResponseEntity<?> saveMovie(@RequestBody Movie movie){
+    public ResponseEntity<?> saveMovie(@Valid @RequestBody Movie movie){
         ResponseEntity responseEntity;
         try {
             if(movieService.getMovieById(movie.getId()).isPresent()){
@@ -42,7 +48,7 @@ public class MovieController {
     }
 
     @PutMapping("{id}")
-    public ResponseEntity<?> updateMovie(@PathVariable("id") String id, @RequestBody Movie movie){
+    public ResponseEntity<?> updateMovie(@PathVariable("id") String id,@Valid @RequestBody Movie movie){
         ResponseEntity responseEntity;
         try {
             if(!movieService.getMovieById(id).isPresent())
@@ -73,7 +79,7 @@ public class MovieController {
     }
 
     @DeleteMapping("{id}")
-    public ResponseEntity<?> deleteMovieById(@PathVariable("id") @RequestBody  String id){
+    public ResponseEntity<?> deleteMovieById(@Valid @PathVariable("id") @RequestBody  String id){
         try{
             if(!movieService.getMovieById(id).isPresent())
                 throw new MovieNotFoundException("id not found");
@@ -86,7 +92,7 @@ public class MovieController {
     }
 
     @GetMapping("{movieName}")
-    public ResponseEntity<?> searchMovieByName(@PathVariable("movieName")  String movieName){
+    public ResponseEntity<?> searchMovieByName(@Valid @PathVariable("movieName")  String movieName){
         List<Movie> moviesByName = movieService.getMovieByMovieName(movieName);
         try{
             if(moviesByName.size() == 0)
@@ -97,5 +103,14 @@ public class MovieController {
             return new ResponseEntity<String>(e.getMessage(), HttpStatus.OK);
         }
 
+    }
+
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    public List<String> handleValidationExceptions(MethodArgumentNotValidException ex){
+        return ex.getBindingResult()
+                .getAllErrors().stream()
+                .map(ObjectError::getDefaultMessage)
+                .collect(Collectors.toList());
     }
 }

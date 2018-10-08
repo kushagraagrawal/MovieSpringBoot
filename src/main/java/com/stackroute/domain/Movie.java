@@ -1,15 +1,32 @@
 package com.stackroute.domain;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.validation.constraints.NotNull;
+import javax.validation.constraints.Size;
 
 @Entity
+@Table(name = "movie")
 public class Movie {
 
     @Id
+    @Column(name = "id")
     private String id;
+
+    @Column(name = "movieRating")
+    @NotNull
     private int movieRating;
+
+    @Column(name = "movieReview")
+    @NotNull
+    @Size(min = 9, message = "review cannot be empty and should have atleast 9 characters")
     private String movieReview;
+
+    @Column(name = "movieName")
+    @NotNull
+    @Size(min=9, message = "movieName cannot be null and should have atleast 9 characters")
     private String movieName;
 
     public Movie() {
