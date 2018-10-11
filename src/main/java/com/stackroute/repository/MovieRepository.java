@@ -11,5 +11,6 @@ import java.util.List;
 @Repository
 public interface MovieRepository extends MongoRepository<Movie, String> {
     public List<Movie> findByMovieName(String movieName);
+    public Movie findByid(String id);
 
 }

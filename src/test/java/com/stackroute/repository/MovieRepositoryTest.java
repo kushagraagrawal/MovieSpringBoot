@@ -70,11 +70,34 @@ public class MovieRepositoryTest{
 
         List<Movie> list = movieRepository.findAll();
         Assert.assertEquals("HarryPotter",list.get(0).getMovieName());
-
-
-
-
     }
 
+    @Test
+    public void testGetAllUserFailure(){
+        Movie m = new Movie("POTC", "2", 3, "decent flicj");
+        movieRepository.save(m);
+        List<Movie> list = movieRepository.findAll();
+        Assert.assertNotEquals("Johnny", list.get(0).getMovieName());
+    }
+
+    @Test
+    public void testFindByMovieName(){
+        Movie u = new Movie("HarryPotter","3",4,"great movie");
+        Movie u1 = new Movie("catwoman","4",1,"horrible");
+        movieRepository.save(u);
+        movieRepository.save(u1);
+        List<Movie> list = movieRepository.findByMovieName("HarryPotter");
+        Assert.assertEquals(1, list.size());
+    }
+
+    @Test
+    public void testFindByMovieNameFailure(){
+        Movie u = new Movie("HarryPotter","3",4,"great movie");
+        Movie u1 = new Movie("catwoman","4",1,"horrible");
+        movieRepository.save(u);
+        movieRepository.save(u1);
+        List<Movie> list = movieRepository.findByMovieName("POTC");
+        Assert.assertNotEquals(2, list.size());
+    }
 
 }

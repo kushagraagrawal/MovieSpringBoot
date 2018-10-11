@@ -4,9 +4,11 @@ package com.stackroute.controller;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.stackroute.domain.Movie;
 
+import com.stackroute.exception.EmptyDBException;
 import com.stackroute.exception.MovieAlreadyExistsException;
 //import com.stackroute.exception.UserAlreadyExistException;
 //import com.stackroute.service.UserService;
+import com.stackroute.exception.MovieNotFoundException;
 import com.stackroute.services.MovieService;
 import com.stackroute.services.MovieServiceImpl;
 import org.junit.Before;
@@ -57,7 +59,7 @@ public class MovieControllerTest {
         MockitoAnnotations.initMocks(this);
         mockMvc = MockMvcBuilders.standaloneSetup(movieController).build();
         movie = new Movie();
-        movie.setMovieName("Johnny English");
+        movie.setMovieName("Johnnyenglish");
         movie.setMovieReview("good movie");
         movie.setMovieRating(5);
         movie.setId("1");
@@ -78,7 +80,7 @@ public class MovieControllerTest {
 
     }
       @Test
-     public void saveUserFailure() throws Exception {
+     public void saveMovieFailure() throws Exception {
         when(movieService.saveMovie(any())).thenThrow(MovieAlreadyExistsException.class);
         mockMvc.perform(MockMvcRequestBuilders.post("/api/v1/movie")
         .contentType(MediaType.APPLICATION_JSON).content(asJsonString(movie)))
@@ -87,7 +89,7 @@ public class MovieControllerTest {
     }
 
     @Test
-    public void getAllUser() throws Exception {
+    public void getAllMovies() throws Exception {
         when(movieService.getAllMovies()).thenReturn(list);
         mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/movie")
         .contentType(MediaType.APPLICATION_JSON).content(asJsonString(movie)))
@@ -95,6 +97,59 @@ public class MovieControllerTest {
                 .andDo(MockMvcResultHandlers.print());
 
     }
+
+    @Test
+    public void getAllMoviesFailure() throws Exception{
+        when(movieService.getAllMovies()).thenThrow(EmptyDBException.class);
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/movie")
+        .contentType(MediaType.APPLICATION_JSON).content(asJsonString(movie)))
+                .andExpect(MockMvcResultMatchers.status().isNotFound())
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+    @Test
+    public void searchMovieByName() throws Exception{
+        when(movieService.getMovieByMovieName((String)any())).thenReturn(list);
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/movie/Johnny")
+                .contentType(MediaType.APPLICATION_JSON).content(asJsonString(movie)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+    @Test
+    public void searchMovieByNameFailure() throws Exception{
+        when(movieService.getMovieByMovieName((String)any())).thenThrow(MovieNotFoundException.class);
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/movie")
+                .contentType(MediaType.APPLICATION_JSON).content(asJsonString(movie)))
+                .andExpect(MockMvcResultMatchers.status().isNotFound())
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+    @Test
+    public void updateMovie() throws Exception{
+        //movieService.saveMovie(movie);
+        //List<Movie> movieList = movieService.getAllMovies();
+        //System.out.println(movieList);
+        //Movie movie1 = new Movie("HTTYD","1", 4, "good movie");
+        when(movieService.getAllMovies()).thenReturn(list);
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/movie/1")
+                .contentType(MediaType.APPLICATION_JSON).content(asJsonString(movie)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+    @Test
+    public void deleteMovie() throws Exception {
+        //movieService.saveMovie(movie);
+        when(movieService.getAllMovies()).thenReturn(list);
+        System.out.println(list);
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/movie/1")
+                .contentType(MediaType.APPLICATION_JSON).content(asJsonString(movie)))
+                .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+
 
 
     private static String asJsonString(final Object obj)

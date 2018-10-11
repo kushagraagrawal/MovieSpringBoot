@@ -3,6 +3,7 @@ package com.stackroute.service;
 
 import com.stackroute.domain.Movie;
 import com.stackroute.exception.MovieAlreadyExistsException;
+import com.stackroute.exception.MovieNotFoundException;
 import com.stackroute.repository.MovieRepository;
 import com.stackroute.services.MovieServiceImpl;
 import org.junit.Assert;
@@ -78,12 +79,29 @@ public class MovieServiceTest {
         movieRepository.save(movie);
         //stubbing the mock to return specific data
         when(movieRepository.findAll()).thenReturn(list);
-        List<Movie> userlist = movieService.getAllMovies();
-        Assert.assertEquals(list,userlist);
+        List<Movie> movieList = movieRepository.findAll();
+        Assert.assertEquals(list,movieList);
 
         //add verify
     }
 
+    @Test
+    public void deleteMovie(){
+        //when(movieRepository.save((Movie)any())).thenReturn(movie);
+        when(movieRepository.findById((String)any())).thenReturn(java.util.Optional.of((Movie) movie));
+        //System.out.println("movieTitlle" + movie.getMovieTitle());
+        boolean deletedMovie = movieService.deleteMovieById(movie.getId());
+        //System.out.println("deletedUser" + deletedUser);
+        Assert.assertEquals(true,deletedMovie);
+
+    }
+
+    @Test
+    public void getMovieByMovieName(){
+        when(movieRepository.findByMovieName((String)any())).thenReturn(list);
+        List<Movie> movieList = movieRepository.findByMovieName(movie.getMovieName());
+        Assert.assertEquals(list, movieList);
+    }
 
 
 
