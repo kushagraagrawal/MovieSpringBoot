@@ -86,7 +86,7 @@ public class MovieServiceTest {
     }
 
     @Test
-    public void deleteMovie(){
+    public void deleteMovie() throws MovieNotFoundException{
         //when(movieRepository.save((Movie)any())).thenReturn(movie);
         when(movieRepository.findById((String)any())).thenReturn(java.util.Optional.of((Movie) movie));
         //System.out.println("movieTitlle" + movie.getMovieTitle());

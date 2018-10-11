@@ -36,17 +36,11 @@ public class MovieController {
     public ResponseEntity<?> saveMovie(@Valid @RequestBody Movie movie){
         ResponseEntity responseEntity;
         try {
-            if(movieService.getMovieById(movie.getId())!=null){
-                throw new MovieAlreadyExistsException("Movie Already Exists");
-            }
-
             Movie movieThatWasSaved = movieService.saveMovie(movie);
             responseEntity = new ResponseEntity<Movie>(movieThatWasSaved, HttpStatus.CREATED);
 
-        }catch (MovieAlreadyExistsException e){
+        }catch (MovieAlreadyExistsException e) {
             responseEntity = new ResponseEntity<String>(e.getMessage(), HttpStatus.CONFLICT);
-        }catch (MovieNotFoundException e){
-            responseEntity = new ResponseEntity<String>(e.getMessage(), HttpStatus.CREATED);
         }
         return responseEntity;
     }
@@ -55,17 +49,15 @@ public class MovieController {
     public ResponseEntity<?> updateMovie(@PathVariable("id") String id,@Valid @RequestBody Movie movie){
         ResponseEntity responseEntity;
         try {
-            if(movieService.getMovieById(id)==null)
-                throw new MovieNotFoundException("ID not present");
 
             Movie movieThatWasUpdated = movieService.updateMovie(id, movie);
+            System.out.println(id);
+            System.out.println(movie);
+            System.out.println("test");
             responseEntity =  new ResponseEntity<Movie>(movieThatWasUpdated, HttpStatus.OK);
         }catch (MovieNotFoundException e){
             responseEntity = new ResponseEntity<String>(e.getMessage(), HttpStatus.NOT_FOUND); //check
-        }catch (MovieAlreadyExistsException e){
-            responseEntity = new ResponseEntity<String>(e.getMessage(), HttpStatus.NOT_ACCEPTABLE);
         }
-
         return responseEntity;
     }
 
@@ -75,9 +67,6 @@ public class MovieController {
         ResponseEntity responseEntity;
         try {
             List<Movie> movieList = movieService.getAllMovies();
-            if(movieList.size() ==0)
-                throw new EmptyDBException("DB is empty");
-
             responseEntity = new ResponseEntity<List<Movie>>(movieList, HttpStatus.OK);
         }catch (EmptyDBException e){
             responseEntity = new ResponseEntity<String>(e.getMessage(), HttpStatus.NOT_FOUND);//check
@@ -90,13 +79,10 @@ public class MovieController {
         try{
             System.out.println(id);
             System.out.println(movieService.getMovieById(id));
-            if(movieService.getMovieById(id)==null)
-                throw new MovieNotFoundException("id not found");
-
             movieService.deleteMovieById(id);
             List<Movie> movieList = movieService.getAllMovies();
-            if(movieList.size() ==0)
-                throw new EmptyDBException("movie DB is empty");
+//            if(movieList.size() ==0)
+//                throw new EmptyDBException("movie DB is empty");
 
             return new ResponseEntity<List<Movie>>(movieList, HttpStatus.OK);
         }catch (MovieNotFoundException e){
@@ -114,9 +100,6 @@ public class MovieController {
 
         try{
             List<Movie> moviesByName = movieService.getMovieByMovieName(movieName);
-            if(moviesByName.size() == 0)
-                throw new MovieNotFoundException("the movie doesn't exist");
-
             return new ResponseEntity<List<Movie>>(moviesByName, HttpStatus.OK);
         }catch (MovieNotFoundException e){
             return new ResponseEntity<String>(e.getMessage(), HttpStatus.NOT_FOUND);//check

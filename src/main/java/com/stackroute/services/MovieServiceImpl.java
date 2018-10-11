@@ -41,9 +41,9 @@ public class MovieServiceImpl implements MovieService {
     }
 
     @Override
-    public boolean deleteMovieById(String movieId){// throws MovieNotFoundException {
-//        if(!movieRepository.findById(movieId).isPresent())
-//            throw new MovieNotFoundException("movie not found");
+    public boolean deleteMovieById(String movieId) throws MovieNotFoundException {
+        if(!movieRepository.findById(movieId).isPresent())
+            throw new MovieNotFoundException("movie not found");
         movieRepository.deleteById(movieId);
         return true;
     }

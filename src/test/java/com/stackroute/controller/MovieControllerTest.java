@@ -26,7 +26,7 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultHandlers;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-
+import static org.mockito.ArgumentMatchers.eq;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -119,7 +119,7 @@ public class MovieControllerTest {
     @Test
     public void searchMovieByNameFailure() throws Exception{
         when(movieService.getMovieByMovieName((String)any())).thenThrow(MovieNotFoundException.class);
-        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/movie")
+        mockMvc.perform(MockMvcRequestBuilders.get("/api/v1/movie/Johnny")
                 .contentType(MediaType.APPLICATION_JSON).content(asJsonString(movie)))
                 .andExpect(MockMvcResultMatchers.status().isNotFound())
                 .andDo(MockMvcResultHandlers.print());
@@ -127,11 +127,7 @@ public class MovieControllerTest {
 
     @Test
     public void updateMovie() throws Exception{
-        //movieService.saveMovie(movie);
-        //List<Movie> movieList = movieService.getAllMovies();
-        //System.out.println(movieList);
-        //Movie movie1 = new Movie("HTTYD","1", 4, "good movie");
-        when(movieService.getAllMovies()).thenReturn(list);
+        when(movieService.updateMovie(eq(movie.getId()), (Movie)any())).thenReturn(movie);
         mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/movie/1")
                 .contentType(MediaType.APPLICATION_JSON).content(asJsonString(movie)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
@@ -139,13 +135,32 @@ public class MovieControllerTest {
     }
 
     @Test
+    public void updateMovieFailure() throws Exception{
+        when(movieService.updateMovie(eq(movie.getId()), (Movie)any())).thenThrow(MovieNotFoundException.class);
+        mockMvc.perform(MockMvcRequestBuilders.put("/api/v1/movie/1")
+                .contentType(MediaType.APPLICATION_JSON).content(asJsonString(movie)))
+                .andExpect(MockMvcResultMatchers.status().isNotFound())
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+    @Test
     public void deleteMovie() throws Exception {
         //movieService.saveMovie(movie);
-        when(movieService.getAllMovies()).thenReturn(list);
+        when(movieService.deleteMovieById((String)any())).thenReturn(true);
         System.out.println(list);
         mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/movie/1")
                 .contentType(MediaType.APPLICATION_JSON).content(asJsonString(movie)))
                 .andExpect(MockMvcResultMatchers.status().isOk())
+                .andDo(MockMvcResultHandlers.print());
+    }
+
+    @Test
+    public void deleteMovieFailure() throws Exception{
+        when(movieService.deleteMovieById((String)any())).thenThrow(MovieNotFoundException.class);
+        System.out.println(list);
+        mockMvc.perform(MockMvcRequestBuilders.delete("/api/v1/movie/1")
+                .contentType(MediaType.APPLICATION_JSON).content(asJsonString(movie)))
+                .andExpect(MockMvcResultMatchers.status().isNotFound())
                 .andDo(MockMvcResultHandlers.print());
     }
 
