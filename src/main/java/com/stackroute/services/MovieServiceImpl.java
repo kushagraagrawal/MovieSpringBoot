@@ -2,6 +2,7 @@ package com.stackroute.services;
 
 
 import com.stackroute.domain.Movie;
+import com.stackroute.exception.MovieAlreadyExistsException;
 import com.stackroute.repository.MovieRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
@@ -19,9 +20,16 @@ public class MovieServiceImpl implements MovieService {
     @Autowired
     MovieRepository movieRepository;
 
-    public Movie saveMovie(Movie movie){
+    public Movie saveMovie(Movie movie) throws MovieAlreadyExistsException{
         //Movie x = movieRepository.save(movie);
-        return movieRepository.save(movie);
+        if(movieRepository.existsById(movie.getId())){
+            throw new MovieAlreadyExistsException("Movie Already Exists");
+        }
+        Movie saveMovie = movieRepository.save(movie);
+        if(saveMovie == null){
+            throw new MovieAlreadyExistsException("Movie Already Exists");
+        }
+        return saveMovie;
     }
     @Override
     public List<Movie> getAllMovies(){

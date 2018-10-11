@@ -1,30 +1,29 @@
 package com.stackroute.domain;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
+
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
-@Entity
-@Table(name = "movie")
+@Document
+
 public class Movie {
 
     @Id
-    @Column(name = "id")
+    //@Column(name = "id")
     private String id;
 
-    @Column(name = "movieRating")
+    //@Column(name = "movieRating")
     @NotNull
     private int movieRating;
 
-    @Column(name = "movieReview")
+    //@Column(name = "movieReview")
     @NotNull
     @Size(min = 9, message = "review cannot be empty and should have atleast 9 characters")
     private String movieReview;
 
-    @Column(name = "movieName")
+    //@Column(name = "movieName")
     @NotNull
     @Size(min=9, message = "movieName cannot be null and should have atleast 9 characters")
     private String movieName;

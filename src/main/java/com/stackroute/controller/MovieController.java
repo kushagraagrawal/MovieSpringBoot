@@ -25,7 +25,7 @@ import java.util.stream.Collectors;
 @RequestMapping("/api/v1/movie")
 public class MovieController {
 
-    @Qualifier("MovieServiceImpl2")
+    @Qualifier("MovieServiceImpl")
     private MovieService movieService;
     @Autowired
     public MovieController(MovieService movieService){

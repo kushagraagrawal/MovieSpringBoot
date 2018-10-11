@@ -19,20 +19,22 @@ import org.springframework.validation.beanvalidation.LocalValidatorFactoryBean;
 //@Configuration
 //@ComponentScan
 //@EnableAutoConfiguration
-public class MovieApplication implements ApplicationListener<ContextRefreshedEvent>, CommandLineRunner {
+public class MovieApplication {//implements ApplicationListener<ContextRefreshedEvent>, CommandLineRunner {
+    public static void main(String[] args) {
+        SpringApplication.run(MovieApplication.class, args);
+    }
 
 
-	MovieRepository movieRepository;
+
+	/*MovieRepository movieRepository;
 
 	@Autowired
 	public MovieApplication(MovieRepository movieRepository){
 		this.movieRepository=movieRepository;
-	}
-	public static void main(String[] args) {
-		SpringApplication.run(MovieApplication.class, args);
-	}
+	}*/
 
-	@Override
+
+	/*@Override
 	public void run(String... args) throws Exception {
 		Movie movie = new Movie("TitanicsaA", "1", 5, "dicaprio could have lived");
 		movieRepository.save(movie);
@@ -50,7 +52,7 @@ public class MovieApplication implements ApplicationListener<ContextRefreshedEve
 		movie = new Movie("Titanasdaic", "5", 5, "dicaprio could have lived");
 		movieRepository.save(movie);
 	}
-
+*/
 	@Bean
 	public LocalValidatorFactoryBean validator(MessageSource messageSource){
 		LocalValidatorFactoryBean validatorFactoryBean = new LocalValidatorFactoryBean();
